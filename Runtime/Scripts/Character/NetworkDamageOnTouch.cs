@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MoreMountains.TopDownEngine.Netcode
 {
-    public class DamageOnTouch_Netcode : DamageOnTouch
+    public class NetworkDamageOnTouch : DamageOnTouch
     {
         protected override void OnCollideWithDamageable(Health health) {
             _collidingHealth = health;
@@ -28,7 +28,7 @@ namespace MoreMountains.TopDownEngine.Netcode
                     //TODO implement damage over time for netcode here
                 }
                 else {
-                    if (_colliderHealth is Health_Netcode _netcodeHealth) {
+                    if (_colliderHealth is NetworkHealth _netcodeHealth) {
                         _netcodeHealth.Damage(randomDamage, NetworkObject, InvincibilityDuration, InvincibilityDuration, _damageDirection, TypedDamages);
                     }
                     else {

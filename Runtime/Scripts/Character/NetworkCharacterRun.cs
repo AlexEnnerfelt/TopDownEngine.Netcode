@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace MoreMountains.TopDownEngine.Netcode
 {
-    public class CharacterRun_Netcode : CharacterRun
+    public class NetworkCharacterRun : CharacterRun
     {
         protected override void HandleInput() {
             if (NetworkObject.IsLocalPlayer) {

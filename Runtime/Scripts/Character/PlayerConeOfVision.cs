@@ -5,13 +5,13 @@ namespace MoreMountains.TopDownEngine.Netcode
 {
     public class PlayerConeOfVision : MMConeOfVision2D
     {
-        private Character_Netcode character;
+        private NetworkCharacter character;
         [SerializeField]
         private GameObject coneOfVisionObject;
 
         protected override void Awake() {
             base.Awake();
-            character = GetComponent<Character_Netcode>();
+            character = GetComponent<NetworkCharacter>();
         }
 
         protected override void LateUpdate() {

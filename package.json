@@ -1,0 +1,25 @@
+{
+    "name": "com.ennerfelt.topdownengine.netcode",
+    "version": "0.1.0",
+    "displayName": "TopDownEngine Netcode",
+    "unity": "2020.1",
+    "unityRelease": "0b5",
+    "documentationUrl": "https://github.com/AlexEnnerfelt/TopDownEngine.Netcode",
+    "changelogUrl": "https://github.com/AlexEnnerfelt/unity-utilities/blob/main/CHANGELOG.md",
+    "licensesUrl": "https://github.com/AlexEnnerfelt/unity-utilities/blob/main/LICENSE",
+    "keywords": [
+      "Utility",
+      "Extension"
+    ],
+    "author": {
+      "name": "Alex Ennerfelt",
+      "email": "alex.ennerfelt@gmail.com",
+      "url": "https://github.com/AlexEnnerfelt"
+    },
+  
+    "description": "An assortment of utilities that are helpful and also needed for a number of packages",
+  
+    "dependencies": {
+        "com.unity.netcode.gameobjects": "1.5.1"
+    }
+  }

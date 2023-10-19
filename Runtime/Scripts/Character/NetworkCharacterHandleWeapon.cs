@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MoreMountains.TopDownEngine.Netcode
 {
-    public class CharacterHandleWeapon_Netcode : CharacterHandleWeapon, IWeaponAnchorHandler
+    public class NetworkCharacterHandleWeapon : CharacterHandleWeapon, IWeaponAnchorHandler
     {
         [Space]
         [Header("Netcode")]

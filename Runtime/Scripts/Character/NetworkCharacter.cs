@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MoreMountains.TopDownEngine.Netcode
 {
-    public class Character_Netcode : Character
+    public class NetworkCharacter : Character
     {
         public override void RespawnAt(Transform spawnPoint, FacingDirections facingDirection) {
             base.RespawnAt(spawnPoint, facingDirection);

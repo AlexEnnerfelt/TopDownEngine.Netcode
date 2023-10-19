@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace MoreMountains.TopDownEngine.Netcode
 {
-    public class CharcterJump2D_Netcode : CharacterJump2D
+    public class NetworkCharcterJump2D : CharacterJump2D
     {
         protected override void HandleInput() {
             if (IsLocalPlayer) {
