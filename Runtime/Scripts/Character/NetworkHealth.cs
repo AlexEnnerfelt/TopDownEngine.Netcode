@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TopDownEngine.Netcode;
 using Unity.Netcode;
 using UnityEngine;
@@ -77,27 +78,24 @@ namespace MoreMountains.TopDownEngine.Netcode {
 		protected virtual DamageInfo ProcessNetworkDamage(NetworkDamageInfo info) {
 			//Get the instigator object
 			var instigatorObject = NetworkManager.SpawnManager.SpawnedObjects.GetValueOrDefault(info.instigatorId);
-			var instigatorGameObject = instigatorObject.gameObject;
+			GameObject instigatorGameObject = null;
+			if (instigatorObject != null) {
+				instigatorGameObject = instigatorObject.gameObject;
+			}
 
 			//Get typed damage from serialized values
-			var damageType = DamageType_Netcode.GetDamageTypeWithId(info.damageType);
-			var typed = new List<TypedDamage>();
-			//Use only to identify type, no additional damage
-			var t = new TypedDamage {
-				AssociatedDamageType = damageType,
-				MinDamageCaused = 0,
-				MaxDamageCaused = 0,
+			var damageType = info.typedDamage.ToReferenceType();
+			var typed = new List<TypedDamage> {
+				//Use only to identify type, no additional damage
+				damageType
 			};
-			typed.Add(t);
 
 			//Perform the damage logic
 			//Note! This will call SetHealth that will in turn set the netHealth
-			//var deg = Mathf.Atan2(info.damageDirection.x, info.damageDirection.y) * Mathf.Rad2Deg;
-			//DamageMMFeedbacks.transform.rotation = Quaternion.AngleAxis(deg, new Vector3(0,0,1));
 			base.Damage(info.damage, instigatorGameObject, info.DamageCausedInvincibilityDuration, info.DamageCausedInvincibilityDuration, info.damageDirection, typed);
 
 
-			//Build a damage object that has all the information recieved from the network but converted to managed objects 
+			//Build a damage object that has all the information received from the network but converted to managed objects 
 			var damageObject = new DamageInfo {
 				damage = info.damage,
 				DamageCausedInvincibilityDuration = info.DamageCausedInvincibilityDuration,
@@ -120,7 +118,7 @@ namespace MoreMountains.TopDownEngine.Netcode {
 				SetHealthServerRpc(MaximumHealth);
 			}
 		}
-		protected virtual void ProcessNetworkKill(DamageInfo killingBlow) {
+		public virtual void ProcessNetworkKill(DamageInfo killingBlow) {
 			if (IsServer) {
 				netIsDead.Value = true;
 			}
@@ -133,19 +131,18 @@ namespace MoreMountains.TopDownEngine.Netcode {
 		}
 
 		public void Damage(float damage, NetworkObject instigator, float flickerDuration, float invincibilityDuration, Vector3 damageDirection, List<TypedDamage> typedDamages = null) {
-			sbyte damageTypeId = 0;
-			TypedDamage type;
-			if (typedDamages.Count > 0) {
-				type = typedDamages[0];
-				if (type.AssociatedDamageType is DamageType_Netcode dmgNet) {
-					damageTypeId = dmgNet.UID;
-				}
-			}
+			//TypedDamage type;
+			//if (typedDamages.Count > 0) {
+			//	type = typedDamages[0];
+			//	if (type.AssociatedDamageType is DamageType_Netcode dmgNet) {
+			//		_ = dmgNet.UID;
+			//	}
+			//}
 
 			var networkDamage = new NetworkDamageInfo {
 				damage = damage,
 				damageDirection = damageDirection,
-				damageType = damageTypeId,
+				typedDamage = new NetworkTypedDamage(typedDamages.First()),
 				instigatorId = instigator.NetworkObjectId,
 				instigatorClientId = instigator.OwnerClientId
 			};
@@ -166,7 +163,7 @@ namespace MoreMountains.TopDownEngine.Netcode {
 		public float damage;
 		public Vector3 damageDirection;
 		public float DamageCausedInvincibilityDuration;
-		public sbyte damageType;
+		public NetworkTypedDamage typedDamage;
 		public ulong instigatorId;
 		public ulong instigatorClientId;
 
@@ -174,7 +171,7 @@ namespace MoreMountains.TopDownEngine.Netcode {
 			serializer.SerializeValue(ref damage);
 			serializer.SerializeValue(ref damageDirection);
 			serializer.SerializeValue(ref DamageCausedInvincibilityDuration);
-			serializer.SerializeValue(ref damageType);
+			serializer.SerializeValue(ref typedDamage);
 			serializer.SerializeValue(ref instigatorId);
 			serializer.SerializeValue(ref instigatorClientId);
 		}

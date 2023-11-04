@@ -37,7 +37,6 @@ namespace MoreMountains.TopDownEngine.Netcode {
 			}
 		}
 
-
 		public override void PlayAbilityStartFeedbacks() {
 			base.PlayAbilityStartFeedbacks();
 			if (IsOwner) {
