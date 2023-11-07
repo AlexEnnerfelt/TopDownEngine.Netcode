@@ -8,34 +8,35 @@ namespace TopDownEngine.Netcode {
 		public MMF_Player ownerAbilityStopFeedback;
 
 		public override void PlayAbilityStartFeedbacks() {
-			ownerAbilityStartFeedback?.PlayFeedbacks();
-			if (AbilityStartFeedbacks == null) {
-				return;
-			}
 			if (IsOwner) {
+				ownerAbilityStartFeedback?.PlayFeedbacks();
+				if (AbilityStartFeedbacks == null) {
+					return;
+				}
 				if (IsServer) {
 					PlayAbilityStartFeedbacksClientRpc();
 				} else {
 					//Notify server
 					PlayAbilityStartFeedbacksServerRpc();
 				}
-				base.PlayAbilityStartFeedbacks();
 			}
+			base.PlayAbilityStartFeedbacks();
 		}
 		public override void PlayAbilityStopFeedbacks() {
-			ownerAbilityStopFeedback?.PlayFeedbacks();
-			if (AbilityStopFeedbacks == null) {
-				return;
-			}
 			if (IsOwner) {
+				ownerAbilityStopFeedback?.PlayFeedbacks();
+				if (AbilityStopFeedbacks == null) {
+					return;
+				}
+
 				if (IsServer) {
 					PlayAbilityStopFeedbacksClientRpc();
 				} else {
 					//Notify server
 					PlayAbilityStopFeedbacksServerRpc();
 				}
-				base.PlayAbilityStopFeedbacks();
 			}
+			base.PlayAbilityStopFeedbacks();
 		}
 
 		[ServerRpc]
