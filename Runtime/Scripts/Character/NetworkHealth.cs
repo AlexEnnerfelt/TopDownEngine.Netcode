@@ -174,8 +174,6 @@ namespace MoreMountains.TopDownEngine.Netcode {
 			ProcessNetworkKill(damageObject);
 		}
 
-
-
 		#region Network Set health 
 
 		public override void SetHealth(float newValue) {
@@ -193,14 +191,24 @@ namespace MoreMountains.TopDownEngine.Netcode {
 			}
 		}
 		public override void ReceiveHealth(float health, GameObject instigator) {
-			base.ReceiveHealth(health, instigator);
+			//Copy of original but checks that it has a network object
 			if (instigator.TryGetComponent<NetworkObject>(out var networkObject)) {
-
+				// this function adds health to the character's Health and prevents it to go above MaxHealth.
+				if (MasterHealth != null) {
+					MasterHealth.SetHealth(Mathf.Min(CurrentHealth + health, MaximumHealth));
+				} else {
+					SetHealth(Mathf.Min(CurrentHealth + health, MaximumHealth));
+				}
+				UpdateHealthBar(true);
 			}
 		}
 
+		//TODO This throws exceptions at the end of rounds
 		[ServerRpc]
 		private void SetHealthServerRpc(float newValue) {
+			base.SetHealth(newValue);
+			netHealth.Value = newValue;
+
 			var list = NetworkManager.ConnectedClientsIds.ToList();
 			list.Remove(OwnerClientId);
 			list.Remove(NetworkManager.ServerClientId);
@@ -212,8 +220,8 @@ namespace MoreMountains.TopDownEngine.Netcode {
 			SetHealthClientRpc(newValue, send);
 		}
 		[ClientRpc]
-		private void SetHealthClientRpc(float newHealth, ClientRpcParams send) {
-			base.SetHealth(newHealth);
+		private void SetHealthClientRpc(float newValue, ClientRpcParams send) {
+			base.SetHealth(newValue);
 		}
 
 		#endregion
@@ -222,7 +230,7 @@ namespace MoreMountains.TopDownEngine.Netcode {
 
 		public override void ResetHealthToMaxHealth() {
 			base.ResetHealthToMaxHealth();
-			if (IsOwner) {
+			if (IsOwner && IsSpawned) {
 				SetHealthServerRpc(MaximumHealth);
 			}
 		}
