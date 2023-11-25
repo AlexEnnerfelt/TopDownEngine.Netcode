@@ -44,10 +44,44 @@ public static class NetworkManagerExtensions {
 			}
 		};
 	}
+
+	public static ClientRpcParams SendToOwner(this NetworkObject networkObject) {
+		ulong[] send = { networkObject.OwnerClientId };
+		return new() {
+			Send = new() {
+				TargetClientIds = send,
+			}
+		};
+	}
+	public static ClientRpcParams SendToOwner(this NetworkBehaviour networkObject) {
+		ulong[] send = { networkObject.OwnerClientId };
+		return new() {
+			Send = new() {
+				TargetClientIds = send,
+			}
+		};
+	}
+	public static ClientRpcParams SendExceptToOwner(this NetworkObject networkObject) {
+		var connected = networkObject.NetworkManager.ConnectedClientsIds.ToList();
+		connected.Remove(networkObject.OwnerClientId);
+		return new() {
+			Send = new() {
+				TargetClientIds = connected
+			}
+		};
+	}
 	/// <summary>
 	/// Looks for the component requested, first in the current ovject, then in parent
 	/// </summary>
 	public static bool TryGetComponentInParent<T>(this GameObject obj, out T component) where T : Component {
+		if (obj.TryGetComponent(out component)) {
+			return true;
+		} else {
+			component = obj.GetComponentInParent<T>();
+		}
+		return component != null;
+	}
+	public static bool TryGetComponentInParent<T>(this Behaviour obj, out T component) {
 		if (obj.TryGetComponent(out component)) {
 			return true;
 		} else {
