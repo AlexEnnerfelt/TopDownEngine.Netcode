@@ -1,6 +1,6 @@
 {
     "name": "com.ennerfelt.topdownengine.netcode",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "displayName": "TopDownEngine Netcode",
     "unity": "2020.1",
     "unityRelease": "0b5",
