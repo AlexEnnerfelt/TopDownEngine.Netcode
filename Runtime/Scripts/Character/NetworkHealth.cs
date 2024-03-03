@@ -57,6 +57,7 @@ namespace MoreMountains.TopDownEngine.Netcode {
 			var typed = new List<TypedDamage> {
 				damageType
 			};
+			var dmg = ComputeDamageOutput(info.damage, typed);
 
 			//Perform the damage logic
 			Damage(info.damage, instigator, info.DamageCausedInvincibilityDuration, info.DamageCausedInvincibilityDuration, info.damageDirection, typed);
@@ -64,7 +65,7 @@ namespace MoreMountains.TopDownEngine.Netcode {
 
 			//Build a damage object that has all the information received from the network but converted to managed objects 
 			damageInfo = new DamageInfo {
-				damage = info.damage,
+				damage = dmg,
 				DamageCausedInvincibilityDuration = info.DamageCausedInvincibilityDuration,
 				damageDirection = info.damageDirection,
 				Instigator = instigatorObject,

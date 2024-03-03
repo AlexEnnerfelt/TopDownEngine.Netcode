@@ -12,6 +12,17 @@ public static class NetworkManagerExtensions {
 		}
 		return null;
 	}
+	public static bool TryGetNetworkObjectByID(this NetworkManager nm, ulong id, out NetworkObject networkObject) {
+		var objects = nm.SpawnManager.SpawnedObjectsList;
+		foreach (var obj in objects) {
+			if (obj.NetworkObjectId == id) {
+				networkObject = obj;
+				return true;
+			}
+		}
+		networkObject = default;
+		return false;
+	}
 	public static NetworkClient GetClientByID(this NetworkManager nm, ulong id = 0) {
 		if (!nm.IsServer) {
 			if (id != nm.LocalClientId) {
@@ -69,24 +80,5 @@ public static class NetworkManagerExtensions {
 				TargetClientIds = connected
 			}
 		};
-	}
-	/// <summary>
-	/// Looks for the component requested, first in the current ovject, then in parent
-	/// </summary>
-	public static bool TryGetComponentInParent<T>(this GameObject obj, out T component) where T : Component {
-		if (obj.TryGetComponent(out component)) {
-			return true;
-		} else {
-			component = obj.GetComponentInParent<T>();
-		}
-		return component != null;
-	}
-	public static bool TryGetComponentInParent<T>(this Behaviour obj, out T component) {
-		if (obj.TryGetComponent(out component)) {
-			return true;
-		} else {
-			component = obj.GetComponentInParent<T>();
-		}
-		return component != null;
 	}
 }

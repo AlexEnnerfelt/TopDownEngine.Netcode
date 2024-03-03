@@ -18,27 +18,35 @@ namespace TopDownEngine.Netcode {
 		public static T GetObject() {
 			return objects.First().Value;
 		}
+		public static T GetObjectByName(string name) {
+			return objects.FirstOrDefault(o => o.Value.name == name).Value;
+		}
 		public static void TryRegisterValue(T value) {
 			objects ??= new();
 			//Does not contain value
 			if (objects.ContainsValue(value))
 				return;
 
+			var keyChanged = false;
 			var val = value as INetworkReferableObject<T>;
 			var id = val.Id;
 			while (objects.ContainsKey(id)) {
 				id = (ushort)Random.Range(ushort.MinValue, ushort.MaxValue);
+				keyChanged = true;
 			}
 			objects.Add(id, value);
 			val.Id = id;
 
+			if (keyChanged) {
+
 #if UNITY_EDITOR
-			UnityEditor.EditorUtility.SetDirty(value);
-			UnityEditor.AssetDatabase.SaveAssetIfDirty(value);
-			if (!UnityEditor.AssetDatabase.IsAssetImportWorkerProcess()) {
-				UnityEditor.AssetDatabase.Refresh();
-			}
+				UnityEditor.EditorUtility.SetDirty(value);
+				UnityEditor.AssetDatabase.SaveAssetIfDirty(value);
+				if (!UnityEditor.AssetDatabase.IsAssetImportWorkerProcess()) {
+					UnityEditor.AssetDatabase.Refresh();
+				}
 #endif
+			}
 		}
 	}
 }
