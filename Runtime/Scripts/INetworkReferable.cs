@@ -41,10 +41,6 @@ namespace TopDownEngine.Netcode {
 
 #if UNITY_EDITOR
 				UnityEditor.EditorUtility.SetDirty(value);
-				UnityEditor.AssetDatabase.SaveAssetIfDirty(value);
-				if (!UnityEditor.AssetDatabase.IsAssetImportWorkerProcess()) {
-					UnityEditor.AssetDatabase.Refresh();
-				}
 #endif
 			}
 		}
